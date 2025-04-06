@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passanger Navigation Window Example</title>
+
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Font Awesome for custom map markers and button icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Leaflet Map CSS - Must be loaded before Leaflet JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+
+    <!-- Leaflet Routing Machine CSS for route display -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+
+    <!-- Leaflet JS Core Library -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+
+    <!-- Leaflet Routing Machine JS for route calculations -->
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+</head>
+<body>
+    <!-- Main container for the application -->
+    <div class="container">
+        <div class="content">
+            <!-- Title section -->
+            <div class="mainTitle">
+                
+                <h1 class="mainTitleText">Passanger Navigation</h1>
+            </div>  
+            <!-- Map container -->
+            <div id="map"></div>
+            <!-- Driver information display -->
+            <div class="driverInfo">
+                <h2>Driver Estimated Time of Arrival: <br><br><i>15 minutes</i></h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map initialization and configuration script -->
+    <script>
+        // Initialize the map centered on Calgary
+        let map = L.map('map').setView([51.0447, -114.0719], 13);
+        
+        // Define available map tile layers
+        // OpenStreetMap layer
+        let osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        });
+        
+        // Watercolor style map layer
+        let watercolor = L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.{ext}', {
+            minZoom: 1,
+            maxZoom: 16,
+            attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            ext: 'jpg'
+        });
+        
+        // Google Streets layer
+        let googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+            maxZoom: 20,
+            subdomains:['mt0','mt1','mt2','mt3']
+        });
+        // Set Google Streets as default layer
+        googleStreets.addTo(map);
+        
+        // Define custom icons for markers using Font Awesome
+        // Pickup location icon (flag)
+        let fontAwesomeIcon = L.divIcon({
+            html: '<i class="fa-solid fa-flag fa-xl"></i>',
+            iconSize: [20, 20],
+            className: 'myDivIcon'
+        });
+        
+        // Passenger icon (walking person)
+        let passengerIcon = L.divIcon({
+            html: '<i class="fa-solid fa-person-walking fa-flip-horizontal fa-xl"></i>',
+            iconSize: [20, 20],
+            className: 'myPassIcon'
+        });
+        
+        // Driver icon (car)
+        let driverIcon = L.divIcon({
+            html: '<i class="fa-solid fa-car-side fa-flip-horizontal fa-xl"></i>',
+            iconSize: [40, 40],
+            className: 'myDriveIcon'
+        });
+        
+        // Create and add markers to the map
+        // Pickup location marker
+        let singleMarker = L.marker([51.0447, -114.0719], { icon: fontAwesomeIcon });
+        let popup = singleMarker.bindPopup('This is your pickup location').openPopup();
+        popup.addTo(map);
+        
+        // Passenger location marker
+        let passMarker = L.marker([51.0477, -114.0619], { icon: passengerIcon });
+        popup = passMarker.bindPopup('This is the passenger location').openPopup();
+        popup.addTo(map);
+        
+        // Driver location marker
+        let driveMarker = L.marker([50.971339, -114.009056], { icon: driverIcon });
+        popup = driveMarker.bindPopup('This is the driver location').openPopup();
+        popup.addTo(map);
+        
+        // Add walking route between passenger and pickup location
+        let routingControl = L.Routing.control({
+            waypoints: [
+                L.latLng(51.0477, -114.0619),  // Passenger location
+                L.latLng(51.0447, -114.0719)   // Pickup location
+            ],
+            routeWhileDragging: false,
+            router: L.Routing.osrmv1({
+                serviceUrl: 'https://router.project-osrm.org/route/v1',
+                profile: 'foot'  // Use walking profile
+            }),
+            lineOptions: {
+                styles: [
+                    {color: '#0A71D0', opacity: 0.8, weight: 4}  // Match site's blue color
+                ]
+            },
+            createMarker: function() { return null; }, // Disable default route markers
+            show: false // Hide the instruction panel
+        }).addTo(map);
+        
+        // Configure layer control for different map styles
+        let baseMaps = {
+            "OpenStreetMap": osm,
+            "Stamen Watercolor": watercolor,
+            "Google Street": googleStreets
+        };
+        
+        // Configure toggleable marker layers
+        let overlayMaps = {
+            "Pickup": singleMarker,
+            "Passenger": passMarker,
+            "Driver": driveMarker
+        };
+        
+        // Add layer control to map
+        let layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+        // Custom control for passenger location centering
+        L.Control.RecenterPassengerButton = L.Control.extend({
+            onAdd: function() {
+                const button = L.DomUtil.create('button', 'recenter-button');
+                button.innerHTML = '<i class="fa-solid fa-person-walking"></i>';
+                button.title = 'Recenter on passenger';
+                
+                button.onclick = function() {
+                    map.setView(passMarker.getLatLng(), 16);
+                }
+                
+                return button;
+            }
+        });
+
+        // Custom control for driver location centering
+        L.Control.RecenterDriverButton = L.Control.extend({
+            onAdd: function() {
+                const button = L.DomUtil.create('button', 'recenter-button driver');
+                button.innerHTML = '<i class="fa-solid fa-car-side"></i>';
+                button.title = 'Recenter on driver';
+                
+                button.onclick = function() {
+                    map.setView(driveMarker.getLatLng(), 13);
+                }
+                
+                return button;
+            }
+        });
+
+        // Add recenter buttons to map
+        new L.Control.RecenterPassengerButton({ position: 'topleft' }).addTo(map);
+        new L.Control.RecenterDriverButton({ position: 'topleft' }).addTo(map);
+    </script>
+</body>
+</html>
+    

@@ -1,0 +1,120 @@
+html {
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #313637;
+    min-height: 90vh;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #313637;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 98vh;
+}
+
+.mainTitle {
+    color: #0A71D0;
+    background-color: #313637;
+    border-radius: 1rem;
+    box-shadow:0rem 0 .5rem #0A71D0;
+    width: 90%;
+}
+
+.mainTitleText {
+    font-size: clamp(1rem, 5vw, 2rem);
+    font-family: Trebuchet MS, sans-serif;
+    font-weight: bold;
+    text-align: center;
+}
+
+#map {
+    width: 90vw;
+    height: 60vh;
+    background-color: #313637;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 1rem;
+    box-shadow: 0rem 0 .5rem #0A71D0;
+}
+
+.driverInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    border-radius: 1rem;
+    padding: .45rem;
+    background-color: #e6edfaee;
+    font-size: clamp(.5rem, 2vw, 1rem);
+    color: #0A71D0;
+    font-family: Trebuchet MS, sans-serif;
+    box-shadow:0rem 0 .5rem #0A71D0;
+    width: 90%;
+}
+
+.myDivIcon {
+    color: red; /* To change Icon colour */
+    text-align: center; /* Horizontally center the text (icon) */
+    line-height: 20px; /* Vertically center the text (icon) */
+}
+  
+.myPassIcon {
+    color: blue; /* To change Icon colour */
+    text-align: center; /* Horizontally center the text (icon) */
+    line-height: 20px; /* Vertically center the text (icon) */
+}
+  
+.myDriveIcon {
+    color: green; /* To change Icon colour */
+    text-align: center; /* Horizontally center the text (icon) */
+    line-height: 20px; /* Vertically center the text (icon) */
+}
+
+.recenter-button {
+    background-color: white;
+    width: 30px;
+    height: 30px;
+    border: 2px solid rgba(0,0,0,0.2);
+    background-clip: padding-box;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
+.recenter-button:hover {
+    background-color: #f4f4f4;
+}
+
+.recenter-button i {
+    color: #0A71D0;
+    line-height: 30px;
+    text-align: center;
+    width: 100%;
+}
+
+.recenter-button.driver i {
+    color: green;  /* Match the driver icon color */
+}
