@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Routing with Leaflet Routing Machine</title>
+    
+    <!-- Leaflet CSS - The core mapping library -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Leaflet Routing Machine CSS - For route display and controls -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    
+    <style>
+        /* Basic styling */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Map container takes full page height */
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+        
+        /* Container for sidebar */
+        .app-container {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+        }
+        
+        /* Sidebar styling */
+        #sidebar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 300px;
+            max-height: calc(100vh - 20px);
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 15px;
+        }
+        
+        /* User type selector styling */
+        #user-type-selector {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        #user-type-selector button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        #user-type-selector button:first-child {
+            border-radius: 4px 0 0 4px;
+        }
+        
+        #user-type-selector button:last-child {
+            border-radius: 0 4px 4px 0;
+        }
+        
+        #user-type-selector button.active {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        /* Styling for the instructions panel */
+        #instructions-panel {
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        
+        /* Directions styling */
+        .directions-container {
+            margin-top: 15px;
+        }
+        
+        .eta-info {
+            background-color: #e9f7fd;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .eta-time {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .directions-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .direction-step {
+            display: flex;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .direction-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+        }
+        
+        .direction-text {
+            flex: 1;
+        }
+        
+        .instruction {
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .distance {
+            display: block;
+            font-size: 0.8em;
+            color: #666;
+        }
+        
+        /* Add some basic styling for the parking zones */
+        .parking-zone {
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        
+        .parking-zone:hover {
+            opacity: 0.8;
+        }
+        
+        /* Styling for popup content */
+        .popup-content {
+            text-align: center;
+        }
+        
+        .popup-content button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .popup-content button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- The map container where Leaflet will render the map -->
+        <div id="map"></div>
+        
+        <!-- Sidebar for user controls and directions -->
+        <div id="sidebar">
+            <div id="user-type-selector">
+                <button id="driver-btn" class="active">Driver</button>
+                <button id="passenger-btn">Passenger</button>
+            </div>
+            <div id="instructions-panel">
+                <h3>Instructions</h3>
+                <div id="status-message">Select a parking zone for your rendezvous.</div>
+                <div id="directions-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JavaScript - The core mapping library -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Leaflet Routing Machine - For calculating routes -->
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    
+    <!-- Our custom JavaScript -->
+    <script src="leaflet-routing-tutorial.js"></script>
+</body>
+</html> 
